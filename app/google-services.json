@@ -1,0 +1,29 @@
+  {
+  "project_info": {
+    "project_number": "319164580257",
+    "project_id": "brterritory-3e1d4",
+    "storage_bucket": "brterritory-3e1d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319164580257:android:6456e7d1e92f6c21ba8be0",
+        "android_client_info": {
+          "package_name": "com.felipe.brterritory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4rPM-c9GWiABsQDcg19lAi0fldWmIOHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

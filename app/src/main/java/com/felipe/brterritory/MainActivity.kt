@@ -1,9 +1,11 @@
 // MainActivity.kt
 package com.felipe.brterritory
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -17,6 +19,7 @@ import com.felipe.brterritory.screens.*
 import com.felipe.brterritory.ui.theme.BRTerritoryTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,6 +30,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -41,9 +45,15 @@ fun MainScreen() {
         ) {
             composable("initialScreen") {
                 InitialScreen(
-                    onLoginClick = { /* Handle login navigation */ },
-                    onRegisterClick = { /* Handle register navigation */ }
+                    onLoginClick = { navController.navigate("loginScreen") },
+                    onRegisterClick = { navController.navigate("registerScreen") }
                 )
+            }
+            composable("loginScreen") {
+                LoginScreen(onLoginSuccess = { navController.navigate("home") })
+            }
+            composable("registerScreen") {
+                RegisterScreen(onRegisterSuccess = { navController.navigate("home") })
             }
             composable("home") {
                 HomeScreen(
@@ -61,6 +71,7 @@ fun MainScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {

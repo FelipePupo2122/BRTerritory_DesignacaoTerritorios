@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun InitialScreen(
-    onLoginClick: () -> Unit = {},
-    onRegisterClick: () -> Unit = {}
+    onLoginClick: () -> Unit,
+    onRegisterClick: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -36,5 +36,8 @@ fun InitialScreen(
 @Preview(showBackground = true)
 @Composable
 fun InitialScreenPreview() {
-    InitialScreen()
+    InitialScreen(
+        onLoginClick = {},
+        onRegisterClick = {}
+    )
 }

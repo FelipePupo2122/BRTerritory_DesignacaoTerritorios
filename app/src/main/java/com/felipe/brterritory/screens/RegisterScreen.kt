@@ -9,6 +9,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(
@@ -17,10 +18,15 @@ fun RegisterScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -59,6 +65,9 @@ fun RegisterScreen(
                         .addOnCompleteListener { task ->
                             isLoading = false
                             if (task.isSuccessful) {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Usuário criado com sucesso")
+                                }
                                 onRegisterSuccess()
                             } else {
                                 errorMessage = task.exception?.message
@@ -70,11 +79,11 @@ fun RegisterScreen(
                     .padding(8.dp),
                 enabled = !isLoading
             ) {
-                Text(text = if (isLoading) "Registrando..." else "Registrar")
+                Text("Registrar")
             }
 
             errorMessage?.let {
-                Text(text = it, color = MaterialTheme.colorScheme.error)
+                Text(it, color = MaterialTheme.colorScheme.error)
             }
         }
     }
@@ -83,5 +92,5 @@ fun RegisterScreen(
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview() {
-    RegisterScreen(onRegisterSuccess = {})
+    RegisterScreen()
 }

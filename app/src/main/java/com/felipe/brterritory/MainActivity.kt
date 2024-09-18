@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.felipe.brterritory
 
 import android.os.Build
@@ -8,14 +7,23 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.felipe.brterritory.screens.*
+import com.felipe.brterritory.screens.HomeScreen
+import com.felipe.brterritory.screens.InitialScreen
+import com.felipe.brterritory.screens.LoginScreen
+import com.felipe.brterritory.screens.RegisterLeaderScreen
+import com.felipe.brterritory.screens.RegisterScreen
+import com.felipe.brterritory.screens.RegisterTerritoryScreen
+import com.felipe.brterritory.screens.RentTerritoryScreen
+import com.felipe.brterritory.screens.ViewRentedTerritoriesScreen
+import com.felipe.brterritory.screens.util.BRBottomNavBar
+import com.felipe.brterritory.screens.util.BRTopBar
 import com.felipe.brterritory.ui.theme.BRTerritoryTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,6 +44,28 @@ fun MainScreen() {
     val navController = rememberNavController()
 
     Scaffold(
+        topBar = {
+            BRTopBar(
+                currentPage = getCurrentPageName(navController.currentBackStackEntry?.destination?.route ?: ""),
+                onPageSelected = { pageName ->
+                    val route = when (pageName) {
+                        "Home" -> "home"
+                        "Register Territory" -> "registerTerritory"
+                        "Rent Territory" -> "rentTerritory"
+                        "View Rented Territories" -> "viewRentedTerritories"
+                        "Register Leader" -> "registerLeader"
+                        else -> return@BRTopBar
+                    }
+                    navController.navigate(route) {
+                        // Optionally pop up to a specific route to clear the back stack
+                        // popUpTo(route) { inclusive = true }
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BRBottomNavBar(navController = navController)
+        },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         NavHost(
@@ -68,6 +98,18 @@ fun MainScreen() {
             composable("viewRentedTerritories") { ViewRentedTerritoriesScreen() }
             composable("registerLeader") { RegisterLeaderScreen() }
         }
+    }
+}
+
+@Composable
+fun getCurrentPageName(route: String): String {
+    return when (route) {
+        "home" -> "Home"
+        "registerTerritory" -> "Register Territory"
+        "rentTerritory" -> "Rent Territory"
+        "viewRentedTerritories" -> "View Rented Territories"
+        "registerLeader" -> "Register Leader"
+        else -> "App Name"
     }
 }
 

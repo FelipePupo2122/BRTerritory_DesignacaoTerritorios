@@ -1,5 +1,3 @@
-package com.felipe.brterritory.screens.util
-
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
@@ -24,7 +22,11 @@ fun BRBottomNavBar(navController: NavController) {
     NavigationBar {
         NavigationBarItem(
             selected = currentRoute == AppRoutes.Home.route,
-            onClick = { navController.navigate(AppRoutes.Home.route) },
+            onClick = {
+                navController.navigate(AppRoutes.Home.route) {
+                    popUpTo(AppRoutes.Home.route) { inclusive = true }
+                }
+            },
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Home,
@@ -35,7 +37,11 @@ fun BRBottomNavBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = currentRoute == AppRoutes.TerritoryList.route,
-            onClick = { navController.navigate(AppRoutes.TerritoryList.route) },
+            onClick = {
+                navController.navigate(AppRoutes.TerritoryList.route) {
+                    popUpTo(AppRoutes.TerritoryList.route) { inclusive = true }
+                }
+            },
             icon = {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.List,
@@ -46,7 +52,15 @@ fun BRBottomNavBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = currentRoute == AppRoutes.Profile.route,
-            onClick = { navController.navigate(AppRoutes.Profile.route) },
+            onClick = {
+                if (currentRoute != AppRoutes.Profile.route) {
+                    navController.navigate(AppRoutes.Profile.route) {
+                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            },
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Person,
@@ -55,5 +69,6 @@ fun BRBottomNavBar(navController: NavController) {
                 )
             }
         )
+
     }
 }

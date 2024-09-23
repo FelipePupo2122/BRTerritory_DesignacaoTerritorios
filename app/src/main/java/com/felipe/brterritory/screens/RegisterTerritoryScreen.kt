@@ -35,10 +35,9 @@ import java.io.FileOutputStream
 fun RegisterTerritoryScreen() {
     var territoryId by remember { mutableStateOf(TextFieldValue()) }
     var fileUri by remember { mutableStateOf<Uri?>(null) }
-    var territoriesList by remember { mutableStateOf(listOf<Pair<String, File>>()) } // Lista para armazenar territórios
+    var territoriesList by remember { mutableStateOf(listOf<Pair<String, File>>()) }
     val context = LocalContext.current
 
-    // Launcher para selecionar o arquivo
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -77,11 +76,10 @@ fun RegisterTerritoryScreen() {
             onClick = {
                 if (territoryId.text.isNotEmpty() && fileUri != null) {
                     val file = fileUri!!.toFile(context)
-                    // Adiciona o território à lista
                     territoriesList = territoriesList + (territoryId.text to file)
                     Toast.makeText(context, "Território salvo com sucesso!", Toast.LENGTH_SHORT).show()
-                    territoryId = TextFieldValue("") // Limpa o campo de entrada
-                    fileUri = null // Limpa o URI do arquivo
+                    territoryId = TextFieldValue("")
+                    fileUri = null
                 } else {
                     Toast.makeText(context, "Preencha todos os campos.", Toast.LENGTH_SHORT).show()
                 }
@@ -93,7 +91,6 @@ fun RegisterTerritoryScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Exibe a lista de territórios
         LazyColumn {
             items(territoriesList) { (id, file) ->
                 Text(text = "ID: $id, Arquivo: ${file.name}", modifier = Modifier.padding(4.dp))

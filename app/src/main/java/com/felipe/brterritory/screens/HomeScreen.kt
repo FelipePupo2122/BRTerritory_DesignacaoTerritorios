@@ -27,28 +27,24 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Carrossel de Territórios Alugados
         CarouselSection(
             title = "Territórios Alugados",
             items = listOf("Território 1", "Território 2", "Território 3"),
             onItemClick = { onViewRentedTerritoriesClick() }
         )
 
-        // Carrossel de Cadastro de Territórios
         CarouselSection(
             title = "Cadastrar Territórios",
             items = listOf("Território A", "Território B", "Território C"),
             onItemClick = { onRegisterTerritoryClick() }
         )
 
-        // Carrossel de Aluguel de Territórios
         CarouselSection(
             title = "Alugar Território",
             items = listOf("Território X", "Território Y", "Território Z"),
             onItemClick = { onRentTerritoryClick() }
         )
 
-        // Carrossel de Cadastro de Dirigentes
         CarouselSection(
             title = "Cadastrar Dirigentes",
             items = listOf("Dirigente 1", "Dirigente 2", "Dirigente 3"),

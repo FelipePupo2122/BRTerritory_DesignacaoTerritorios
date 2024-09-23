@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RegisterLeaderScreen() {
     var leaderName by remember { mutableStateOf("") }
-    var leadersList by remember { mutableStateOf(listOf<String>()) } // Lista para armazenar os dirigentes
+    var leadersList by remember { mutableStateOf(listOf<String>()) }
     val context = LocalContext.current
 
     Column(
@@ -47,10 +47,9 @@ fun RegisterLeaderScreen() {
 
         Button(onClick = {
             if (leaderName.isNotEmpty()) {
-                // Adiciona o nome do dirigente à lista
                 leadersList = leadersList + leaderName
                 Toast.makeText(context, "Dirigente salvo com sucesso!", Toast.LENGTH_SHORT).show()
-                leaderName = "" // Limpa o campo de entrada
+                leaderName = ""
             } else {
                 Toast.makeText(context, "Preencha o nome do dirigente.", Toast.LENGTH_SHORT).show()
             }
@@ -60,7 +59,6 @@ fun RegisterLeaderScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Exibe a lista de dirigentes
         LazyColumn {
             items(leadersList) { leader ->
                 Text(text = leader, modifier = Modifier.padding(4.dp))

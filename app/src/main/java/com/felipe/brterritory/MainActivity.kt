@@ -1,5 +1,8 @@
 package com.felipe.brterritory
 
+import BRBottomNavBar
+import BRTopBar
+import SideMenu
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,21 +12,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.felipe.brterritory.navigation.AppRoutes
 import com.felipe.brterritory.screens.HomeScreen
 import com.felipe.brterritory.screens.InitialScreen
 import com.felipe.brterritory.screens.LoginScreen
+import com.felipe.brterritory.screens.ProfileScreen
 import com.felipe.brterritory.screens.RegisterLeaderScreen
 import com.felipe.brterritory.screens.RegisterScreen
 import com.felipe.brterritory.screens.RegisterTerritoryScreen
 import com.felipe.brterritory.screens.RentTerritoryScreen
 import com.felipe.brterritory.screens.ViewRentedTerritoriesScreen
-import com.felipe.brterritory.screens.util.BRBottomNavBar
-import com.felipe.brterritory.screens.util.BRTopBar
 import com.felipe.brterritory.ui.theme.BRTerritoryTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,80 +45,99 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val showMenu = remember { mutableStateOf(false) }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
 
     Scaffold(
         topBar = {
-            BRTopBar(
-                currentPage = getCurrentPageName(navController.currentBackStackEntry?.destination?.route ?: ""),
-                onPageSelected = { pageName ->
-                    val route = when (pageName) {
-                        "Home" -> "home"
-                        "Register Territory" -> "registerTerritory"
-                        "Rent Territory" -> "rentTerritory"
-                        "View Rented Territories" -> "viewRentedTerritories"
-                        "Register Leader" -> "registerLeader"
-                        else -> return@BRTopBar
-                    }
-                    navController.navigate(route) {
-                        // Optionally pop up to a specific route to clear the back stack
-                        // popUpTo(route) { inclusive = true }
-                    }
-                }
-            )
+            if (currentRoute !in listOf(AppRoutes.InitialScreen.route, AppRoutes.LoginScreen.route, AppRoutes.RegisterScreen.route)) {
+                BRTopBar(
+                    currentPage = getCurrentPageName(currentRoute ?: ""),
+                    onMenuClick = { showMenu.value = !showMenu.value }
+                )
+            }
         },
         bottomBar = {
-            BRBottomNavBar(navController = navController)
+            if (currentRoute !in listOf(AppRoutes.InitialScreen.route, AppRoutes.LoginScreen.route, AppRoutes.RegisterScreen.route)) {
+                BRBottomNavBar(navController = navController)
+            }
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "initialScreen",
+            startDestination = AppRoutes.InitialScreen.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("initialScreen") {
+            composable(AppRoutes.InitialScreen.route) {
                 InitialScreen(
-                    onLoginClick = { navController.navigate("loginScreen") },
-                    onRegisterClick = { navController.navigate("registerScreen") }
+                    onLoginClick = { navController.navigate(AppRoutes.LoginScreen.route) },
+                    onRegisterClick = { navController.navigate(AppRoutes.RegisterScreen.route) }
                 )
             }
-            composable("loginScreen") {
-                LoginScreen(onLoginSuccess = { navController.navigate("home") })
+            composable(AppRoutes.LoginScreen.route) {
+                LoginScreen(onLoginSuccess = { navController.navigate(AppRoutes.Home.route) })
             }
-            composable("registerScreen") {
-                RegisterScreen(onRegisterSuccess = { navController.navigate("home") })
+            composable(AppRoutes.RegisterScreen.route) {
+                RegisterScreen(onRegisterSuccess = { navController.navigate(AppRoutes.Home.route) })
             }
-            composable("home") {
+            composable(AppRoutes.Home.route) {
                 HomeScreen(
-                    onRegisterTerritoryClick = { navController.navigate("registerTerritory") },
-                    onRentTerritoryClick = { navController.navigate("rentTerritory") },
-                    onViewRentedTerritoriesClick = { navController.navigate("viewRentedTerritories") },
-                    onRegisterLeaderClick = { navController.navigate("registerLeader") }
+                    onRegisterTerritoryClick = { navController.navigate(AppRoutes.RegisterTerritory.route) },
+                    onRentTerritoryClick = { navController.navigate(AppRoutes.RentTerritory.route) },
+                    onViewRentedTerritoriesClick = { navController.navigate(AppRoutes.ViewRentedTerritories.route) },
+                    onRegisterLeaderClick = { navController.navigate(AppRoutes.RegisterLeader.route) }
                 )
             }
-            composable("registerTerritory") { RegisterTerritoryScreen() }
-            composable("rentTerritory") { RentTerritoryScreen() }
-            composable("viewRentedTerritories") { ViewRentedTerritoriesScreen() }
-            composable("registerLeader") { RegisterLeaderScreen() }
+            composable(AppRoutes.RegisterTerritory.route) { RegisterTerritoryScreen() }
+            composable(AppRoutes.RentTerritory.route) { RentTerritoryScreen() }
+            composable(AppRoutes.ViewRentedTerritories.route) { ViewRentedTerritoriesScreen() }
+            composable(AppRoutes.RegisterLeader.route) { RegisterLeaderScreen() }
+            composable(AppRoutes.Profile.route) { ProfileScreen() }
+        }
+
+        // Menu Lateral
+        if (showMenu.value) {
+            SideMenu(onDismiss = { showMenu.value = false }) { pageName ->
+                when (pageName) {
+                    "Home" -> navController.navigate(AppRoutes.Home.route)
+                    "Register Territory" -> navController.navigate(AppRoutes.RegisterTerritory.route)
+                    "Rent Territory" -> navController.navigate(AppRoutes.RentTerritory.route)
+                    "View Rented Territories" -> navController.navigate(AppRoutes.ViewRentedTerritories.route)
+                    "Register Leader" -> navController.navigate(AppRoutes.RegisterLeader.route)
+                    "Profile" -> navController.navigate(AppRoutes.Profile.route)
+                }
+                showMenu.value = false
+            }
         }
     }
 }
 
+
+
+
+
+
 @Composable
 fun getCurrentPageName(route: String): String {
     return when (route) {
-        "home" -> "Home"
-        "registerTerritory" -> "Register Territory"
-        "rentTerritory" -> "Rent Territory"
-        "viewRentedTerritories" -> "View Rented Territories"
-        "registerLeader" -> "Register Leader"
+        AppRoutes.Home.route -> "Home"
+        AppRoutes.RegisterTerritory.route -> "Register Territory"
+        AppRoutes.RentTerritory.route -> "Rent Territory"
+        AppRoutes.ViewRentedTerritories.route -> "View Rented Territories"
+        AppRoutes.RegisterLeader.route -> "Register Leader"
+        AppRoutes.Profile.route -> "Profile"
         else -> "App Name"
     }
 }
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)

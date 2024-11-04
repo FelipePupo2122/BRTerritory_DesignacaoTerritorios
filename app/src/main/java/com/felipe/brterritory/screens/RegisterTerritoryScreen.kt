@@ -44,6 +44,7 @@ fun RegisterTerritoryScreen() {
             if (uri != null) {
                 fileUri = uri
                 Toast.makeText(context, "Arquivo selecionado: ${uri.path}", Toast.LENGTH_SHORT).show()
+                //realizado com URI e biblioteca para selecionar os arquivos no repositorio local do Cel
             }
         }
     )

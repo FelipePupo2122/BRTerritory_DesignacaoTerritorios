@@ -20,15 +20,23 @@ class MainActivity : ComponentActivity() {
 
             val isLocal = false
 
-            //Abertura do banco de dados
             val repository: IRepository
-            if (isLocal){
+
+            if (isLocal) {
                 val db = remember { abrirBanco(this) }
                 val dao = db.getTerritorioDao()
                 repository = LocalRepository(dao)
             } else {
-                repository = RemoteRepository()
+                // para o remoto é criado o local antes
+                val db = remember { abrirBanco(this) }
+                val dao = db.getTerritorioDao()
+                val localRepository = LocalRepository(dao)
+
+                // agora cria o remoto e dai passa o local
+                repository = RemoteRepository(localRepository)
             }
+
+            // view model ja vai iniciar com o offline first sempre buscando localmente
             val viewModel = TerritoriosViewModel(repository)
             TerritorioNavHost(viewModel)
         }

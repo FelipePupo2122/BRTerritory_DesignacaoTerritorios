@@ -37,14 +37,17 @@ fun EditarTerritorioScreen(
     var descricao by remember { mutableStateOf("") }
 
     var territorio: Territorio? by remember { mutableStateOf(null) }
+    var errorMessage by remember { mutableStateOf("") }
 
     LaunchedEffect(territorioId) {
         coroutineScope.launch {
             if (territorioId != null) {
                 territorio = viewModel.buscarTerritorioPorId(territorioId)
-                territorio?.let {
-                    nome = it.nome
-                    descricao = it.descricao
+                if (territorio != null) {
+                    nome = territorio?.nome ?: ""
+                    descricao = territorio?.descricao ?: ""
+                } else {
+                    errorMessage = "Território não encontrado."
                 }
             }
         }
@@ -58,6 +61,16 @@ fun EditarTerritorioScreen(
             fontWeight = FontWeight.ExtraBold,
             fontSize = 30.sp
         )
+
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = androidx.compose.ui.graphics.Color.Red,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
             value = nome,
@@ -73,18 +86,24 @@ fun EditarTerritorioScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         Button(onClick = {
-            coroutineScope.launch {
-                val territorioEditado = Territorio(
-                    id = territorioId,
-                    nome = nome,
-                    descricao = descricao
-                )
-                viewModel.gravarTerritorio(territorioEditado)
-                navController.popBackStack()
+            if (nome.isEmpty() || descricao.isEmpty()) {
+                errorMessage = "Todos os campos são obrigatórios!"
+            } else {
+                coroutineScope.launch {
+                    val territorioEditado = Territorio(
+                        id = territorioId,
+                        nome = nome,
+                        descricao = descricao
+                    )
+                    viewModel.gravarTerritorio(territorioEditado)
+                    navController.popBackStack()
+                }
             }
         }) {
             Text(text = "Salvar", fontSize = 30.sp)
         }
     }
 }
+

@@ -4,7 +4,6 @@ import com.felipe.brterritory.dados.models.Territorio
 import com.felipe.brterritory.dados.models.TerritorioDao
 import kotlinx.coroutines.flow.Flow
 
-// Repositório local para manipulação de Territorios
 class LocalRepository(
     private val dao: TerritorioDao
 ) : IRepository {

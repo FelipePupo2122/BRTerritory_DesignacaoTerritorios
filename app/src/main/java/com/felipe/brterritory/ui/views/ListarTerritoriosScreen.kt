@@ -30,9 +30,21 @@ fun ListarTerritoriosScreen(
             fontWeight = FontWeight.ExtraBold,
             fontSize = 30.sp
         )
+
+        if (territorios.isEmpty()) {
+            Text(
+                text = "Nenhum território cadastrado.",
+                fontSize = 18.sp,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
+
         territorios.forEach { territorio ->
             Row(modifier = Modifier.padding(vertical = 4.dp)) {
                 Text(text = territorio.nome, fontSize = 20.sp, modifier = Modifier.weight(1f))
+                Text(text = "Descrição: ${territorio.descricao}", fontSize = 16.sp, modifier = Modifier.weight(1f))
+                Text(text = "Dirigente: ${territorio.id}", fontSize = 16.sp, modifier = Modifier.weight(1f))
+
                 Button(onClick = {
                     navController.navigate("editarTerritorio/${territorio.id}")
                 }) {
@@ -40,6 +52,7 @@ fun ListarTerritoriosScreen(
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = {
             navController.navigate("incluirTerritorio")
@@ -48,3 +61,4 @@ fun ListarTerritoriosScreen(
         }
     }
 }
+

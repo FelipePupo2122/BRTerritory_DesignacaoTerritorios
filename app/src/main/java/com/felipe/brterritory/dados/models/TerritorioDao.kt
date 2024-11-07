@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-// DAO para operações com Territorios
 @Dao
 interface TerritorioDao {
 

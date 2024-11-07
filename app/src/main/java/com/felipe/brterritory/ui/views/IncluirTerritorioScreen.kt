@@ -34,6 +34,7 @@ fun IncluirTerritorioScreen(
     var nome by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
     var dirigenteId by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.padding(20.dp)
@@ -44,6 +45,7 @@ fun IncluirTerritorioScreen(
             fontSize = 30.sp
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -52,6 +54,7 @@ fun IncluirTerritorioScreen(
             label = { Text("Nome") }
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = descricao,
             onValueChange = { descricao = it },
@@ -60,6 +63,7 @@ fun IncluirTerritorioScreen(
             label = { Text("Descrição") }
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = dirigenteId,
             onValueChange = { dirigenteId = it },
@@ -68,17 +72,33 @@ fun IncluirTerritorioScreen(
             label = { Text("ID do Dirigente") }
         )
         Spacer(modifier = Modifier.height(10.dp))
+
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = androidx.compose.ui.graphics.Color.Red,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
         Button(onClick = {
-            coroutineScope.launch {
-                val novoTerritorio = Territorio(
-                    nome = nome,
-                    descricao = descricao
-                )
-                viewModel.gravarTerritorio(novoTerritorio)
-                navController.popBackStack()
+            if (nome.isEmpty() || descricao.isEmpty() || dirigenteId.isEmpty()) {
+                errorMessage = "Todos os campos são obrigatórios!"
+            } else {
+                coroutineScope.launch {
+                    val novoTerritorio = Territorio(
+                        nome = nome,
+                        descricao = descricao
+                    )
+                    viewModel.gravarTerritorio(novoTerritorio)
+                    navController.popBackStack()
+                }
             }
         }) {
             Text(text = "Salvar", fontSize = 30.sp)
         }
     }
 }
+

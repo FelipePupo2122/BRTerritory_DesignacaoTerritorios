@@ -1,7 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.android)
+
+        id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -49,7 +52,9 @@ android {
 
 dependencies {
 
-    implementation("com.google.android.material:material:1.8.0")
+    implementation(libs.androidx.room.runtime.v250)
+    implementation(libs.androidx.room.ktx.v250)
+    implementation(libs.material.v180)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -63,12 +68,17 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.database)
     implementation(libs.androidx.room.common)
+    implementation(libs.material3)
+    implementation(libs.ui)
     implementation(libs.androidx.room.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,4 +86,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    val room_version = "2.6.1"
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
 }

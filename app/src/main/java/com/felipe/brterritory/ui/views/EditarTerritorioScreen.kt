@@ -1,21 +1,11 @@
 package com.felipe.brterritory.ui.views
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +29,7 @@ fun EditarTerritorioScreen(
     var territorio: Territorio? by remember { mutableStateOf(null) }
     var errorMessage by remember { mutableStateOf("") }
 
+    // Carregar os dados do território
     LaunchedEffect(territorioId) {
         coroutineScope.launch {
             if (territorioId != null) {
@@ -54,56 +45,70 @@ fun EditarTerritorioScreen(
     }
 
     Column(
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Editar Território",
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            color = MaterialTheme.colorScheme.primary
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Exibe a mensagem de erro, se houver
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
-                color = androidx.compose.ui.graphics.Color.Red,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        // Campos para editar o nome e a descrição do território
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
-            textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Normal),
-            modifier = Modifier.fillMaxWidth()
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Nome") }
         )
         Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = descricao,
             onValueChange = { descricao = it },
-            textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Normal),
-            modifier = Modifier.fillMaxWidth()
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Descrição") }
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        Button(onClick = {
-            if (nome.isEmpty() || descricao.isEmpty()) {
-                errorMessage = "Todos os campos são obrigatórios!"
-            } else {
-                coroutineScope.launch {
-                    val territorioEditado = Territorio(
-                        id = territorioId,
-                        nome = nome,
-                        descricao = descricao
-                    )
-                    viewModel.gravarTerritorio(territorioEditado)
-                    navController.popBackStack()
+        // Botão de salvar
+        Button(
+            onClick = {
+                if (nome.isEmpty() || descricao.isEmpty()) {
+                    errorMessage = "Todos os campos são obrigatórios!"
+                } else {
+                    coroutineScope.launch {
+                        val territorioEditado = Territorio(
+                            id = territorioId,
+                            nome = nome,
+                            descricao = descricao
+                        )
+                        viewModel.gravarTerritorio(territorioEditado)
+                        navController.popBackStack()
+                    }
                 }
-            }
-        }) {
-            Text(text = "Salvar", fontSize = 30.sp)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text(text = "Salvar", fontSize = 25.sp, color = Color.White)
         }
     }
 }
-

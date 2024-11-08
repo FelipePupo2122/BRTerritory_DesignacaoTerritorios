@@ -1,19 +1,9 @@
 package com.felipe.brterritory.ui.views
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,15 +27,22 @@ fun IncluirTerritorioScreen(
     var errorMessage by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.padding(20.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Título da tela
         Text(
             text = "Novo Território",
             fontWeight = FontWeight.ExtraBold,
-            fontSize = 30.sp
+            fontSize = 30.sp,
+            color = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = Modifier.height(10.dp))
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Campos de entrada
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -73,32 +70,39 @@ fun IncluirTerritorioScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
+        // Exibe mensagem de erro, se houver
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
-                color = androidx.compose.ui.graphics.Color.Red,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(onClick = {
-            if (nome.isEmpty() || descricao.isEmpty() || dirigenteId.isEmpty()) {
-                errorMessage = "Todos os campos são obrigatórios!"
-            } else {
-                coroutineScope.launch {
-                    val novoTerritorio = Territorio(
-                        nome = nome,
-                        descricao = descricao
-                    )
-                    viewModel.gravarTerritorio(novoTerritorio)
-                    navController.popBackStack()
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Botão de salvar
+        Button(
+            onClick = {
+                if (nome.isEmpty() || descricao.isEmpty() || dirigenteId.isEmpty()) {
+                    errorMessage = "Todos os campos são obrigatórios!"
+                } else {
+                    coroutineScope.launch {
+                        val novoTerritorio = Territorio(
+                            nome = nome,
+                            descricao = descricao
+                        )
+                        viewModel.gravarTerritorio(novoTerritorio)
+                        navController.popBackStack()
+                    }
                 }
-            }
-        }) {
-            Text(text = "Salvar", fontSize = 30.sp)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text(text = "Salvar", fontSize = 25.sp)
         }
     }
 }
-

@@ -29,7 +29,6 @@ fun EditarTerritorioScreen(
     var territorio: Territorio? by remember { mutableStateOf(null) }
     var errorMessage by remember { mutableStateOf("") }
 
-    // Carregar os dados do território
     LaunchedEffect(territorioId) {
         coroutineScope.launch {
             if (territorioId != null) {
@@ -59,7 +58,6 @@ fun EditarTerritorioScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Exibe a mensagem de erro, se houver
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
@@ -68,8 +66,6 @@ fun EditarTerritorioScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
-
-        // Campos para editar o nome e a descrição do território
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -88,7 +84,6 @@ fun EditarTerritorioScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Botão de salvar
         Button(
             onClick = {
                 if (nome.isEmpty() || descricao.isEmpty()) {

@@ -1,14 +1,15 @@
 package com.felipe.brterritory.ui.views
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -18,21 +19,43 @@ import androidx.navigation.NavController
 import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ListarTerritoriosScreen(
     viewModel: TerritoriosViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current // Obtendo o contexto local
     val territorios by viewModel.territorios.collectAsState()
+    var isConnected by remember { mutableStateOf(true) }
+
+    // verifica conexão
+    fun isInternetAvailable(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    // Monitorar a conexão
+    LaunchedEffect(Unit) {
+        isConnected = isInternetAvailable()
+        snapshotFlow { isInternetAvailable() }
+            .collect { newStatus -> isConnected = newStatus }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        // Parte superior: Bem-vindo e botão Adicionar Território
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -62,9 +85,36 @@ fun ListarTerritoriosScreen(
             ) {
                 Text(text = "Adicionar Território", fontSize = 18.sp)
             }
+
+            // atualiza botão
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = if (isConnected) "Conectado ao Firebase" else "Desconectado do Firebase",
+                    color = if (isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                    fontSize = 16.sp
+                )
+
+                // Botão att
+                IconButton(
+                    onClick = {
+                        isConnected = isInternetAvailable()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Refresh,
+                        contentDescription = "Atualizar Conexão",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
         }
 
-        //Lista rolável
+        // Lista rolável
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

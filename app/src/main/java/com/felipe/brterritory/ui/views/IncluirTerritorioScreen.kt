@@ -32,7 +32,6 @@ fun IncluirTerritorioScreen(
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título da tela
         Text(
             text = "Novo Território",
             fontWeight = FontWeight.ExtraBold,
@@ -42,7 +41,6 @@ fun IncluirTerritorioScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Campos de entrada
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -82,7 +80,6 @@ fun IncluirTerritorioScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Botão de salvar
         Button(
             onClick = {
                 if (nome.isEmpty() || descricao.isEmpty() || dirigenteId.isEmpty()) {

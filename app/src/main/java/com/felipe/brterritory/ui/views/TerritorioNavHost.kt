@@ -22,14 +22,17 @@ fun TerritorioNavHost(
         composable("incluirTerritorio") {
             IncluirTerritorioScreen(viewModel, navController)
         }
-        composable("editarTerritorio/{territorioId}") { request ->
-            val territorioId = request.arguments?.getString("territorioId")
-            EditarTerritorioScreen(viewModel, territorioId?.toInt(), navController)
+        composable("editarTerritorio/{territorioId}") { backStackEntry ->
+            val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
+            territorioId?.let {
+                EditarTerritorioScreen(viewModel, it, navController)
+            }
         }
-        composable("excluirTerritorio/{territorioId}") { request ->
-            val territorioId = request.arguments?.getString("territorioId")
-            ExcluirTerritorioScreen(viewModel, territorioId?.toInt(), navController)
+        composable("excluirTerritorio/{territorioId}") { backStackEntry ->
+            val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
+            territorioId?.let {
+                ExcluirTerritorioScreen(viewModel, it, navController)
+            }
         }
     }
 }
-

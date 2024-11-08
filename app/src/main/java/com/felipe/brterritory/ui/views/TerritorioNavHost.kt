@@ -26,5 +26,10 @@ fun TerritorioNavHost(
             val territorioId = request.arguments?.getString("territorioId")
             EditarTerritorioScreen(viewModel, territorioId?.toInt(), navController)
         }
+        composable("excluirTerritorio/{territorioId}") { request ->
+            val territorioId = request.arguments?.getString("territorioId")
+            ExcluirTerritorioScreen(viewModel, territorioId?.toInt(), navController)
+        }
     }
 }
+

@@ -34,9 +34,12 @@ class TerritoriosViewModel(
         }
     }
 
-    fun excluirTerritorio(territorio: Territorio) {
+    fun excluirTerritorio(territorioId: Int) {
         viewModelScope.launch {
-            repository.excluir(territorio)
+            val territorio = repository.buscarPorId(territorioId)
+            if (territorio != null) {
+                repository.excluir(territorio)
+            }
         }
     }
 }

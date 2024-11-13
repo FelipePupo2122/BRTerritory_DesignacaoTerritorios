@@ -42,4 +42,12 @@ class TerritoriosViewModel(
             }
         }
     }
+
+    // Função para filtrar territórios por dirigente
+    fun buscarTerritoriosPorDirigente(dirigente: String): List<Territorio> {
+        return _territorios.value.filter {
+            it.dirigente.contains(dirigente, ignoreCase = true)
+        }
+    }
 }
+

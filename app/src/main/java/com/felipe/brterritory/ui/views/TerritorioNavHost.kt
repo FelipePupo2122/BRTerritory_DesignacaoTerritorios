@@ -1,9 +1,15 @@
 package com.felipe.brterritory.ui.views
 
+import EditarTerritorioScreen
+import IncluirTerritorioScreen
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.felipe.brterritory.ui.components.BottomBar
 import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
 
 @Composable
@@ -12,26 +18,37 @@ fun TerritorioNavHost(
 ) {
     val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = "listarTerritorios"
-    ) {
-        composable("listarTerritorios") {
-            ListarTerritoriosScreen(viewModel, navController)
-        }
-        composable("incluirTerritorio") {
-            IncluirTerritorioScreen(viewModel, navController)
-        }
-        composable("editarTerritorio/{territorioId}") { backStackEntry ->
-            val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
-            territorioId?.let {
-                EditarTerritorioScreen(viewModel, it, navController)
+    Scaffold(
+        bottomBar = { BottomBar(navController = navController) } // BottomBar com os botões
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            modifier = Modifier.padding(innerPadding) // Aplica o padding para o conteúdo da tela
+        ) {
+            composable("home") {
+                HomeScreen(navController)
             }
-        }
-        composable("excluirTerritorio/{territorioId}") { backStackEntry ->
-            val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
-            territorioId?.let {
-                ExcluirTerritorioScreen(viewModel, it, navController)
+            composable("listarTerritorios") {
+                ListarTerritoriosScreen(viewModel, navController)
+            }
+            composable("incluirTerritorio") {
+                IncluirTerritorioScreen(viewModel, navController)
+            }
+            composable("editarTerritorio/{territorioId}") { backStackEntry ->
+                val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
+                territorioId?.let {
+                    EditarTerritorioScreen(viewModel, it, navController)
+                }
+            }
+            composable("excluirTerritorio/{territorioId}") { backStackEntry ->
+                val territorioId = backStackEntry.arguments?.getString("territorioId")?.toInt()
+                territorioId?.let {
+                    ExcluirTerritorioScreen(viewModel, it, navController)
+                }
+            }
+            composable("territorioPorDirigente") {
+                TerritorioPorDirigenteScreen(viewModel, navController)
             }
         }
     }

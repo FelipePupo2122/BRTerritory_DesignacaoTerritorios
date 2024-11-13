@@ -1,5 +1,3 @@
-package com.felipe.brterritory.ui.views
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,6 +23,8 @@ fun EditarTerritorioScreen(
 
     var nome by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
+    var dirigente by remember { mutableStateOf("") }
+    var diaDesignado by remember { mutableStateOf("") }
 
     var territorio: Territorio? by remember { mutableStateOf(null) }
     var errorMessage by remember { mutableStateOf("") }
@@ -36,6 +36,8 @@ fun EditarTerritorioScreen(
                 if (territorio != null) {
                     nome = territorio?.nome ?: ""
                     descricao = territorio?.descricao ?: ""
+                    dirigente = territorio?.dirigente ?: ""
+                    diaDesignado = territorio?.diaDesignado ?: ""
                 } else {
                     errorMessage = "Território não encontrado."
                 }
@@ -66,6 +68,7 @@ fun EditarTerritorioScreen(
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
+
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -84,16 +87,36 @@ fun EditarTerritorioScreen(
         )
         Spacer(modifier = Modifier.height(10.dp))
 
+        OutlinedTextField(
+            value = dirigente,
+            onValueChange = { dirigente = it },
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Dirigente") }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = diaDesignado,
+            onValueChange = { diaDesignado = it },
+            textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Normal),
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Data Designada") }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+
         Button(
             onClick = {
-                if (nome.isEmpty() || descricao.isEmpty()) {
+                if (nome.isEmpty() || descricao.isEmpty() || dirigente.isEmpty() || diaDesignado.isEmpty()) {
                     errorMessage = "Todos os campos são obrigatórios!"
                 } else {
                     coroutineScope.launch {
                         val territorioEditado = Territorio(
                             id = territorioId,
                             nome = nome,
-                            descricao = descricao
+                            descricao = descricao,
+                            dirigente = dirigente,
+                            diaDesignado = diaDesignado
                         )
                         viewModel.gravarTerritorio(territorioEditado)
                         navController.popBackStack()

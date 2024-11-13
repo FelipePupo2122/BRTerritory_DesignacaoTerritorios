@@ -1,10 +1,11 @@
-package com.felipe.brterritory.ui.views
-
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -13,6 +14,7 @@ import androidx.navigation.NavController
 import com.felipe.brterritory.dados.models.Territorio
 import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Composable
 fun IncluirTerritorioScreen(
@@ -23,8 +25,23 @@ fun IncluirTerritorioScreen(
 
     var nome by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
-    var dirigenteId by remember { mutableStateOf("") }
+    var dirigente by remember { mutableStateOf("") }
+    var diaDesignado by remember { mutableStateOf("") }  // Ajustado para coincidir com o nome do campo no banco
     var errorMessage by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    // Configurando o DatePickerDialog
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            diaDesignado = "$dayOfMonth/${month + 1}/$year"
+        },
+        calendar.get(Calendar.YEAR),
+        calendar.get(Calendar.MONTH),
+        calendar.get(Calendar.DAY_OF_MONTH)
+    )
 
     Column(
         modifier = Modifier
@@ -60,13 +77,31 @@ fun IncluirTerritorioScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
-            value = dirigenteId,
-            onValueChange = { dirigenteId = it },
+            value = dirigente,
+            onValueChange = { dirigente = it },
             textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Normal),
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("ID do Dirigente") }
+            label = { Text("Dirigente") }
         )
         Spacer(modifier = Modifier.height(10.dp))
+
+        OutlinedTextField(
+            value = diaDesignado,
+            onValueChange = { diaDesignado = it },
+            textStyle = TextStyle(fontSize = 25.sp, fontWeight = FontWeight.Normal),
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Data Designada") },
+            readOnly = true
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Button(
+            onClick = { datePickerDialog.show() },
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
+            Text("Selecionar Data", fontSize = 16.sp)
+        }
 
         // Exibe mensagem de erro, se houver
         if (errorMessage.isNotEmpty()) {
@@ -82,13 +117,15 @@ fun IncluirTerritorioScreen(
 
         Button(
             onClick = {
-                if (nome.isEmpty() || descricao.isEmpty() || dirigenteId.isEmpty()) {
+                if (nome.isEmpty() || descricao.isEmpty() || dirigente.isEmpty() || diaDesignado.isEmpty()) {
                     errorMessage = "Todos os campos são obrigatórios!"
                 } else {
                     coroutineScope.launch {
                         val novoTerritorio = Territorio(
                             nome = nome,
-                            descricao = descricao
+                            descricao = descricao,
+                            dirigente = dirigente,
+                            diaDesignado = diaDesignado  // Ajustado para coincidir com o campo no banco
                         )
                         viewModel.gravarTerritorio(novoTerritorio)
                         navController.popBackStack()

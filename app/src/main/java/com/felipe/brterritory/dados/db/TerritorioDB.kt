@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import com.felipe.brterritory.dados.models.Territorio
 import com.felipe.brterritory.dados.models.TerritorioDao
 
-// Banco de dados para Territórios
-@Database(entities = [Territorio::class], version = 1)
+
+@Database(entities = [Territorio::class], version = 2, exportSchema = false)
 abstract class TerritorioDB : RoomDatabase() {
     abstract fun getTerritorioDao(): TerritorioDao
 }
@@ -19,5 +19,8 @@ fun abrirBanco(context: Context): TerritorioDB {
         context.applicationContext,
         TerritorioDB::class.java,
         name = "territorios.db"
-    ).build()
+    )
+        .fallbackToDestructiveMigration()  // Esta linha irá destruir o banco de dados antigo ao detectar a mudança na versão
+        .build()
 }
+

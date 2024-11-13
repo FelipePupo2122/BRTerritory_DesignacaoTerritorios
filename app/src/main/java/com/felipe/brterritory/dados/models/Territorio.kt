@@ -9,7 +9,10 @@ data class Territorio(
     var id: Int? = null,
     val nome: String,
     val descricao: String,
+    val dirigente: String = "",
+    val diaDesignado: String = "",
     val ativo: Boolean = true
 ) {
-    constructor() : this(null, "", "", true)
+    constructor() : this(null, "", "", "", "", true)
 }
+

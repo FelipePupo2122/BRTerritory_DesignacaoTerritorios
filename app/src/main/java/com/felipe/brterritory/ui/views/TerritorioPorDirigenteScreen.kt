@@ -4,38 +4,32 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
 
 @Composable
-fun ListarTerritoriosScreen(
+fun TerritorioPorDirigenteScreen(
     viewModel: TerritoriosViewModel,
     navController: NavController
 ) {
     val context = LocalContext.current
+    var dirigenteQuery by remember { mutableStateOf(TextFieldValue("")) }
+    var diaDesignadoQuery by remember { mutableStateOf(TextFieldValue("")) }  // Campo para o dia designado
     val territorios by viewModel.territorios.collectAsState()
     var isConnected by remember { mutableStateOf(true) }
 
-    // Função para verificar conexão
+    // Função para verificar a conexão
     fun isInternetAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
@@ -55,38 +49,43 @@ fun ListarTerritoriosScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 20.dp)
         ) {
             Text(
-                text = "Bem-vindo ao BRTerritory",
+                text = "Territórios por Dirigente",
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 24.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
-            Text(
-                text = "Adicione os seus territórios",
-                fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    navController.navigate("incluirTerritorio")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                Text(text = "Adicionar Território", fontSize = 18.sp)
-            }
+            // Campo de busca por dirigente
+            TextField(
+                value = dirigenteQuery,
+                onValueChange = { dirigenteQuery = it },
+                label = { Text("Buscar por Dirigente") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
 
-            // atualiza botão
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Campo de busca por dia designado
+            TextField(
+                value = diaDesignadoQuery,
+                onValueChange = { diaDesignadoQuery = it },
+                label = { Text("Buscar por Dia Designado (YYYY-MM-DD)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Atualiza a conexão
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,19 +97,6 @@ fun ListarTerritoriosScreen(
                     color = if (isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                     fontSize = 16.sp
                 )
-
-                // Botão att
-                IconButton(
-                    onClick = {
-                        isConnected = isInternetAvailable()
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Atualizar Conexão",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
             }
         }
 
@@ -121,10 +107,27 @@ fun ListarTerritoriosScreen(
                 .padding(top = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (territorios.isEmpty()) {
+            // Aplicação do filtro por dirigente e dia designado
+            val filteredTerritorios = territorios.filter { territorio ->
+                (dirigenteQuery.text.isBlank() || territorio.dirigente.contains(dirigenteQuery.text, ignoreCase = true)) &&
+                        (diaDesignadoQuery.text.isBlank() || territorio.diaDesignado == diaDesignadoQuery.text)
+            }
+
+            if (filteredTerritorios.isEmpty() && (dirigenteQuery.text.isNotEmpty() || diaDesignadoQuery.text.isNotEmpty())) {
                 item {
                     Text(
-                        text = "Nenhum território cadastrado.",
+                        text = "Nenhum território encontrado para os critérios de pesquisa.",
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
+            } else if (filteredTerritorios.isEmpty()) {
+                item {
+                    Text(
+                        text = "Use os campos acima para pesquisar por territórios.",
                         fontSize = 18.sp,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -133,12 +136,11 @@ fun ListarTerritoriosScreen(
                     )
                 }
             } else {
-                items(territorios) { territorio ->
+                items(filteredTerritorios) { territorio ->
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp, horizontal = 12.dp)
-                            .then(Modifier.padding(horizontal = 8.dp))
                     ) {
                         Text(
                             text = territorio.nome,

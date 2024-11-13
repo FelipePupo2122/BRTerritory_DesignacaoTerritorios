@@ -63,7 +63,6 @@ fun TerritorioPorDirigenteScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de busca por dirigente
             TextField(
                 value = dirigenteQuery,
                 onValueChange = { dirigenteQuery = it },
@@ -74,7 +73,6 @@ fun TerritorioPorDirigenteScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo de busca por dia designado
             TextField(
                 value = diaDesignadoQuery,
                 onValueChange = { diaDesignadoQuery = it },
@@ -85,7 +83,6 @@ fun TerritorioPorDirigenteScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Atualiza a conexão
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -100,14 +97,12 @@ fun TerritorioPorDirigenteScreen(
             }
         }
 
-        // Lista rolável
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Aplicação do filtro por dirigente e dia designado
             val filteredTerritorios = territorios.filter { territorio ->
                 (dirigenteQuery.text.isBlank() || territorio.dirigente.contains(dirigenteQuery.text, ignoreCase = true)) &&
                         (diaDesignadoQuery.text.isBlank() || territorio.diaDesignado == diaDesignadoQuery.text)

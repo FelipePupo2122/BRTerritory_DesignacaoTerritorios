@@ -26,7 +26,6 @@ fun HomeScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Título do aplicativo
         Text(
             text = "App BRTerritory",
             fontSize = 28.sp,
@@ -34,7 +33,6 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier.padding(top = 32.dp)
         )
 
-        // Botões para navegar
         Column(
             modifier = Modifier.fillMaxHeight(0.8f),
             verticalArrangement = Arrangement.SpaceEvenly,
@@ -80,10 +78,16 @@ fun HomeScreen(navController: NavController) {
             ) {
                 Text("Territórios por Dirigente")
             }
+
+            Button(
+                onClick = { navController.navigate("historico") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Text("Histórico de Modificações")
+            }
         }
     }
 
-    // Pop-up de entrada de ID do Território
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

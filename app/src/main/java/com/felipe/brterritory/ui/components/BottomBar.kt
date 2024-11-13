@@ -15,12 +15,11 @@ import androidx.navigation.NavController
 @Composable
 fun BottomBar(navController: NavController) {
     BottomAppBar(
-        modifier = Modifier.height(56.dp) // Define a altura do BottomAppBar
+        modifier = Modifier.height(56.dp)
     ) {
-        // Botão para voltar (à esquerda)
         IconButton(
             onClick = { navController.popBackStack() },
-            modifier = Modifier.weight(1f, fill = true) // Deixa o botão da esquerda ocupar o espaço
+            modifier = Modifier.weight(1f, fill = true)
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -28,14 +27,13 @@ fun BottomBar(navController: NavController) {
             )
         }
 
-        // Botão para navegar à HomeScreen (à direita)
         IconButton(
             onClick = {
                 navController.navigate("home") {
-                    popUpTo("home") { inclusive = true } // Garante que a Home não acumule no stack de navegação
+                    popUpTo("home") { inclusive = true }
                 }
             },
-            modifier = Modifier.weight(1f, fill = true) // Deixa o botão da direita ocupar o espaço
+            modifier = Modifier.weight(1f, fill = true)
         ) {
             Icon(
                 imageVector = Icons.Default.Home,

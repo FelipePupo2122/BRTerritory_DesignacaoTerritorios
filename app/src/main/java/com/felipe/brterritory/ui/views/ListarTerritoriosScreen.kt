@@ -43,7 +43,6 @@ fun ListarTerritoriosScreen(
         return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
-    // Monitorar a conexão
     LaunchedEffect(Unit) {
         isConnected = isInternetAvailable()
         snapshotFlow { isInternetAvailable() }
@@ -86,7 +85,6 @@ fun ListarTerritoriosScreen(
                 Text(text = "Adicionar Território", fontSize = 18.sp)
             }
 
-            // atualiza botão
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +97,6 @@ fun ListarTerritoriosScreen(
                     fontSize = 16.sp
                 )
 
-                // Botão att
                 IconButton(
                     onClick = {
                         isConnected = isInternetAvailable()
@@ -114,7 +111,6 @@ fun ListarTerritoriosScreen(
             }
         }
 
-        // Lista rolável
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

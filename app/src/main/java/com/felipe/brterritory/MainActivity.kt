@@ -9,6 +9,7 @@ import com.felipe.brterritory.dados.db.abrirBanco
 import com.felipe.brterritory.dados.repositories.IRepository
 import com.felipe.brterritory.dados.repositories.LocalRepository
 import com.felipe.brterritory.dados.repositories.RemoteRepository
+import com.felipe.brterritory.ui.viewmodels.ModificacoesViewModel
 import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
 import com.felipe.brterritory.ui.views.TerritorioNavHost
 
@@ -17,28 +18,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val db = remember { abrirBanco(this) }
+            val territorioDao = db.getTerritorioDao()
+            val modificacaoDao = db.getModificacaoDao()
 
-            val isLocal = false
-
-            val repository: IRepository
-
-            if (isLocal) {
-                val db = remember { abrirBanco(this) }
-                val dao = db.getTerritorioDao()
-                repository = LocalRepository(dao)
-            } else {
-                // para o remoto é criado o local antes
-                val db = remember { abrirBanco(this) }
-                val dao = db.getTerritorioDao()
-                val localRepository = LocalRepository(dao)
-
-                // agora cria o remoto e dai passa o local
-                repository = RemoteRepository(localRepository)
+            val repository: IRepository = remember {
+                val localRepository = LocalRepository(territorioDao, modificacaoDao)
+                if (isLocal) {
+                    localRepository
+                } else {
+                    RemoteRepository(localRepository)
+                }
             }
 
-            // view model ja vai iniciar com o offline first sempre buscando localmente
-            val viewModel = TerritoriosViewModel(repository)
-            TerritorioNavHost(viewModel)
+            val territorioViewModel = remember { TerritoriosViewModel(repository) }
+            val modificacaoViewModel = remember { ModificacoesViewModel(modificacaoDao) }
+
+            TerritorioNavHost(territorioViewModel, modificacaoViewModel)
         }
+    }
+
+    companion object {
+        private const val isLocal = false
     }
 }

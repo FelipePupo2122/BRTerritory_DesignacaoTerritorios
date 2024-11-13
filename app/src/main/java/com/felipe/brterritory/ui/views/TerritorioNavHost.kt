@@ -11,20 +11,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.felipe.brterritory.ui.components.BottomBar
 import com.felipe.brterritory.ui.viewmodels.TerritoriosViewModel
+import com.felipe.brterritory.ui.viewmodels.ModificacoesViewModel
 
 @Composable
 fun TerritorioNavHost(
-    viewModel: TerritoriosViewModel
+    viewModel: TerritoriosViewModel,
+    modificacaoViewModel: ModificacoesViewModel
 ) {
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController) } // BottomBar com os botões
+        bottomBar = { BottomBar(navController = navController) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "home",
-            modifier = Modifier.padding(innerPadding) // Aplica o padding para o conteúdo da tela
+            modifier = Modifier.padding(innerPadding)
         ) {
             composable("home") {
                 HomeScreen(navController)
@@ -49,6 +51,9 @@ fun TerritorioNavHost(
             }
             composable("territorioPorDirigente") {
                 TerritorioPorDirigenteScreen(viewModel, navController)
+            }
+            composable("historico") {
+                HistModificacoesScreen(modificacaoViewModel)
             }
         }
     }

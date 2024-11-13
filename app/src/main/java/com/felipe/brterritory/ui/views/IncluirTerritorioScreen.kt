@@ -26,13 +26,12 @@ fun IncluirTerritorioScreen(
     var nome by remember { mutableStateOf("") }
     var descricao by remember { mutableStateOf("") }
     var dirigente by remember { mutableStateOf("") }
-    var diaDesignado by remember { mutableStateOf("") }  // Ajustado para coincidir com o nome do campo no banco
+    var diaDesignado by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
-    // Configurando o DatePickerDialog
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
@@ -103,7 +102,6 @@ fun IncluirTerritorioScreen(
             Text("Selecionar Data", fontSize = 16.sp)
         }
 
-        // Exibe mensagem de erro, se houver
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
@@ -125,7 +123,7 @@ fun IncluirTerritorioScreen(
                             nome = nome,
                             descricao = descricao,
                             dirigente = dirigente,
-                            diaDesignado = diaDesignado  // Ajustado para coincidir com o campo no banco
+                            diaDesignado = diaDesignado
                         )
                         viewModel.gravarTerritorio(novoTerritorio)
                         navController.popBackStack()

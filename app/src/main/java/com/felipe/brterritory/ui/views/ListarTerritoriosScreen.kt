@@ -35,7 +35,7 @@ fun ListarTerritoriosScreen(
     val territorios by viewModel.territorios.collectAsState()
     var isConnected by remember { mutableStateOf(true) }
 
-    // Função para verificar conexão
+    // verificar conexão
     fun isInternetAvailable(): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork
@@ -54,7 +54,6 @@ fun ListarTerritoriosScreen(
             .fillMaxSize()
             .padding(20.dp)
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -151,6 +150,10 @@ fun ListarTerritoriosScreen(
                         )
                         Text(
                             text = "Dia Designado: ${territorio.diaDesignado}",
+                            fontSize = 16.sp
+                        )
+                        Text(
+                            text = "Data Devolução: ${territorio.dataTerritorioDevolvido}",
                             fontSize = 16.sp
                         )
 

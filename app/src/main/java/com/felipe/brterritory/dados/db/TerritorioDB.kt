@@ -9,7 +9,7 @@ import com.felipe.brterritory.dados.models.TerritorioDao
 import com.felipe.brterritory.dados.models.Modificacao // Importa Modificacao
 import com.felipe.brterritory.dados.models.ModificacaoDao // Importa ModificacaoDao
 
-@Database(entities = [Territorio::class, Modificacao::class], version = 3, exportSchema = false)
+@Database(entities = [Territorio::class, Modificacao::class], version = 4, exportSchema = false)
 abstract class TerritorioDB : RoomDatabase() {
     abstract fun getTerritorioDao(): TerritorioDao
     abstract fun getModificacaoDao(): ModificacaoDao

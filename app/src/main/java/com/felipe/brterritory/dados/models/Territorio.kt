@@ -11,8 +11,8 @@ data class Territorio(
     val descricao: String,
     val dirigente: String = "",
     val diaDesignado: String = "",
+    val dataTerritorioDevolvido: String = "", 
     val ativo: Boolean = true
 ) {
-    constructor() : this(null, "", "", "", "", true)
+    constructor() : this(null, "", "", "", "", "", true)
 }
-

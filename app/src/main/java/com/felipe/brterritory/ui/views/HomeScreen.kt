@@ -39,6 +39,24 @@ fun HomeScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
+                onClick = { navController.navigate("incluirTerritorio") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Text("Incluir Território")
+            }
+            Button(
+                onClick = { navController.navigate("listarTerritorios") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Text("Listar Territórios")
+            }
+            Button(
+                onClick = { navController.navigate("territorioPorDirigente") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Text("Territórios por Dirigente")
+            }
+            Button(
                 onClick = {
                     isEdit = true
                     showDialog = true
@@ -56,27 +74,6 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
             ) {
                 Text("Excluir Território")
-            }
-
-            Button(
-                onClick = { navController.navigate("incluirTerritorio") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-            ) {
-                Text("Incluir Território")
-            }
-
-            Button(
-                onClick = { navController.navigate("listarTerritorios") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-            ) {
-                Text("Listar Territórios")
-            }
-
-            Button(
-                onClick = { navController.navigate("territorioPorDirigente") },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-            ) {
-                Text("Territórios por Dirigente")
             }
 
             Button(

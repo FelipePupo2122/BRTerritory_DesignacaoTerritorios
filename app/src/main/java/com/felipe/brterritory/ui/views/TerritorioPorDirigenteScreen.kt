@@ -25,7 +25,7 @@ fun TerritorioPorDirigenteScreen(
 ) {
     val context = LocalContext.current
     var dirigenteQuery by remember { mutableStateOf(TextFieldValue("")) }
-    var diaDesignadoQuery by remember { mutableStateOf(TextFieldValue("")) }  // Campo para o dia designado
+    var diaDesignadoQuery by remember { mutableStateOf(TextFieldValue("")) }
     val territorios by viewModel.territorios.collectAsState()
     var isConnected by remember { mutableStateOf(true) }
 
@@ -39,7 +39,6 @@ fun TerritorioPorDirigenteScreen(
 
     // Monitorar a conexão
     LaunchedEffect(Unit) {
-        isConnected = isInternetAvailable()
         snapshotFlow { isInternetAvailable() }
             .collect { newStatus -> isConnected = newStatus }
     }
@@ -97,17 +96,21 @@ fun TerritorioPorDirigenteScreen(
             }
         }
 
+        // Filtragem dos territórios com base nas queries
+        val filteredTerritorios = remember(territorios, dirigenteQuery.text, diaDesignadoQuery.text) {
+            territorios.filter { territorio ->
+                (dirigenteQuery.text.isBlank() || territorio.dirigente.contains(dirigenteQuery.text, ignoreCase = true)) &&
+                        (diaDesignadoQuery.text.isBlank() || territorio.diaDesignado == diaDesignadoQuery.text)
+            }
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            val filteredTerritorios = territorios.filter { territorio ->
-                (dirigenteQuery.text.isBlank() || territorio.dirigente.contains(dirigenteQuery.text, ignoreCase = true)) &&
-                        (diaDesignadoQuery.text.isBlank() || territorio.diaDesignado == diaDesignadoQuery.text)
-            }
-
+            // Se não encontrar resultados
             if (filteredTerritorios.isEmpty() && (dirigenteQuery.text.isNotEmpty() || diaDesignadoQuery.text.isNotEmpty())) {
                 item {
                     Text(
@@ -155,6 +158,12 @@ fun TerritorioPorDirigenteScreen(
                             fontSize = 16.sp
                         )
 
+                        // Adicionando a Data de Devolução
+                        Text(
+                            text = "Data Devolução: ${territorio.dataTerritorioDevolvido ?: "Não devolvido"}",
+                            fontSize = 16.sp
+                        )
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -185,4 +194,3 @@ fun TerritorioPorDirigenteScreen(
         }
     }
 }
-
